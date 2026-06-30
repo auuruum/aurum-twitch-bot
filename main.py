@@ -27,23 +27,28 @@ class Bot(commands.Bot):
 
     @commands.command(name="links", aliases=("link",))
     async def link_command(self, ctx: commands.Context):
+        print(f"Links command invoked by {ctx.author.name}")
         await ctx.send('https://auuruum.github.io')
 
     @commands.command(name="help", aliases=("commands", "command"))
     async def help_command(self, ctx: commands.Context):
+        print(f"Help command invoked by {ctx.author.name}")
         command_list = ', '.join([command.name for command in self.commands.values()])
         await ctx.send(f'Available commands: {command_list}')
 
     @commands.command(name="steam")
     async def steam_command(self, ctx: commands.Context):
+        print(f"Steam command invoked by {ctx.author.name}")
         await ctx.send('https://steamcommunity.com/id/auuruum')
 
     @commands.command(name="youtube")
     async def youtube_command(self, ctx: commands.Context):
+        print(f"Youtube command invoked by {ctx.author.name}")
         await ctx.send('https://youtube.com/@auurummm')
 
     @commands.command(name="website")
     async def website_command(self, ctx: commands.Context):
+        print(f"Website command invoked by {ctx.author.name}")
         await ctx.send('https://auuruum.github.io')
 
     @commands.command(name="elo")
@@ -55,6 +60,7 @@ class Bot(commands.Bot):
 
             # Extract and format the ELO information
             message = f"ELO: {data['elo']}, LVL: {data['lvl']}, Today: {data['telo']}, W: {data['tw']}, L: {data['tl']}"
+            print(f"ELO command invoked by {ctx.author.name}")
             await ctx.send(message)
 
         except Exception as e:
