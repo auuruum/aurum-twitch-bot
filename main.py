@@ -55,6 +55,11 @@ class Bot(commands.Bot):
         print(f"Website command invoked by {ctx.author.name}")
         await ctx.send('https://auuruum.github.io')
 
+    @commands.command(name="setup")
+    async def setup_command(self, ctx: commands.Context):
+        print(f"Setup command invoked by {ctx.author.name}")
+        await ctx.send('https://auuruum.me/setup/')
+
     @commands.command(name="elo")
     async def elo_command(self, ctx: commands.Context):
         try:
