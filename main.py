@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 import os
 
+import aiohttp
 from twitchio.ext import commands
-import requests
 
 load_dotenv()
 
@@ -58,13 +58,16 @@ class Bot(commands.Bot):
     @commands.command(name="elo")
     async def elo_command(self, ctx: commands.Context):
         try:
-            response = requests.get(env("STRUGLY_URL"), timeout=5)
-            response.raise_for_status()
-            data = response.json()
+            timeout = aiohttp.ClientTimeout(total=5)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(env("STRUGLY_URL")) as response:
+                    response.raise_for_status()
+                    data = await response.json()
+
             print(f"ELO command invoked by {ctx.author.name}")
             await ctx.send(format_elo(data))
 
-        except (requests.RequestException, ValueError, KeyError) as e:
+        except (aiohttp.ClientError, TimeoutError, ValueError, KeyError) as e:
             print(f"Error fetching ELO data: {e}")
             await ctx.send("Error fetching ELO data. Try again later.")
 
