@@ -16,6 +16,10 @@ def env(name):
     return value
 
 
+def format_elo(data):
+    return f"ELO: {data['elo']}, LVL: {data['lvl']}, Today: {data['telo']}, W: {data['tw']}, L: {data['tl']}"
+
+
 class Bot(commands.Bot):
 
     def __init__(self):
@@ -54,22 +58,20 @@ class Bot(commands.Bot):
     @commands.command(name="elo")
     async def elo_command(self, ctx: commands.Context):
         try:
-            # Fetch data from the API
-            response = requests.get(env("STRUGLY_URL"))
+            response = requests.get(env("STRUGLY_URL"), timeout=5)
+            response.raise_for_status()
             data = response.json()
-
-            # Extract and format the ELO information
-            message = f"ELO: {data['elo']}, LVL: {data['lvl']}, Today: {data['telo']}, W: {data['tw']}, L: {data['tl']}"
             print(f"ELO command invoked by {ctx.author.name}")
-            await ctx.send(message)
+            await ctx.send(format_elo(data))
 
-        except Exception as e:
+        except (requests.RequestException, ValueError, KeyError) as e:
             print(f"Error fetching ELO data: {e}")
             await ctx.send("Error fetching ELO data. Try again later.")
 
-missing = [name for name in REQUIRED_ENV if not os.getenv(name)]
-if missing:
-    raise RuntimeError(f"Missing required .env values: {', '.join(missing)}")
+if __name__ == "__main__":
+    missing = [name for name in REQUIRED_ENV if not os.getenv(name)]
+    if missing:
+        raise RuntimeError(f"Missing required .env values: {', '.join(missing)}")
 
-bot = Bot()
-bot.run()
+    bot = Bot()
+    bot.run()
